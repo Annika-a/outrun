@@ -3,7 +3,7 @@ function startf(){
     xmlhttp.onreadystatechange = function() {
       if (xmlhttp.readyState==4) {
      numbs = FileTo(xmlhttp.responseText);
-     PrintRoute(FindTheBestRoute()); //Tulostetaan parasreitti
+     PrintRoute(FindTheBestRoute()); //Tulostetaan paras reitti
       } 
     }
     xmlhttp.open("GET", "tree.txt", true);
