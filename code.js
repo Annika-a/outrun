@@ -1,51 +1,46 @@
 function startf(){
-readFileHttp("tree.txt");
-var bestroute = FindTheBestRoute();
-//Näytetään jäljelle jäänyt reitti: 
-PrintRoute(bestroute); 
+readFileHttp("tree.txt")
 }
 
 var numbs = [[]];
 var seednumber;
 
 function FindTheBestRoute(){
-var  routes = [];
-
-//Luodaan ensimmäiset reitit alareunasta:
+var  routes = []; //Tähän tallenetaan löydetyt reitit
+//Luodaan ensimmäiset reitit alareunan joka solusta oma:
 for(var x = 0; x <numbs.length-1; x++){
 routes.push([x]);
 }
 
-var kierros = 0;
-var leveys = numbs.length-2;
-
-while(kierros<numbs.length-2){
-var rlength = routes.length;
-for(var y = 0; y < rlength; y++){
+var round = 0;
+var currentwidth = numbs.length-2;
+//Käydään läpi ruudukkoa alakerroksesta ylöspäin
+while(round<numbs.length-2){
+for(var y = 0; y < currentwidth+1; y++){
    //Reittien seuraavien askelien lisääminen
-   if(routes[y][kierros] == 0){
+   if(routes[y][round] == 0){
     //Edellinen indeksi 0:lla reunassa
-      routes[y].push(routes[y][kierros]);
+      routes[y].push(routes[y][round]);
     }
-     else if(routes[y][kierros] == leveys){
+     else if(routes[y][round] == currentwidth){
       //Edellinen indeksi toisessa ulkoreunassa
-    routes[y].push(routes[y][kierros]-1);
+    routes[y].push(routes[y][round]-1);
      }else{
      //Luodaan uusi reitti keskimmäisiin 
     var tempa = routes[y].slice(0);
-    tempa.push(routes[y][kierros]-1);
+    tempa.push(routes[y][round]-1);
     routes.push(tempa);  
-    
-    routes[y].push(routes[y][kierros]);
+    //Jatketaan jo olemassa olevaa
+    routes[y].push(routes[y][round]);
    }
-   } 
-   
+   }
+
 //Eliminointi, Säilytetään kohtaavista reiteistä isompi:
 var deletable = [];//deletoitavien reittien indeksit tähän
-for(var x = 0; x <= leveys; x++){
+for(var x = 0; x <= currentwidth; x++){
 var tempsave =[]; 
 for(var v = 0; v <routes.length; v++){
-        if(routes[v][kierros+1] == x)tempsave.push(v);      
+        if(routes[v][round+1] == x)tempsave.push(v);      
    }
     if(tempsave.length>1) {
               if(RouteSum(routes[tempsave[0]]) > RouteSum(routes[tempsave[1]])){
@@ -56,17 +51,18 @@ for(var v = 0; v <routes.length; v++){
           }   
  } 
 
+//Poistetaan routesta valitut
 deletable.sort(function(a,b){return a-b});
 var numberofdeleted=0;
 for(f in deletable){
 routes.splice(deletable[f]-numberofdeleted, 1);
 numberofdeleted++;
 }
-leveys--;
-kierros++;
+currentwidth--;
+round++;
 }
- 
- return routes[0];
+//Näytetään jäljelle jäänyt reitti: 
+PrintRoute(routes[0]); 
 }
 
 function RouteSum(count){
@@ -80,24 +76,24 @@ var sum = 0;
       return sum;
 }
 
-
 function PrintRoute(route){
 //Piirtää reittipuuhun valitun reitin punaisella.
 document.write("<h2>"+seednumber+"</br>");
 document.write("Reitin summa:"+RouteSum(route)+"</h2>");
 route.reverse();
-document.write(" <br>");
-var printable = "<center><span style=\"font-size:10px\">";
+var printable = "<center><span style=\"font-size:9px\">";
       for(var x = 0; x < numbs.length; x++){
           for(var y = 0; y<numbs[x].length; y++) {
+            var p ="";
+            if(numbs[x][y]<10)p= "0";//Näyttää paremmalta tämän kanssa
             if(route[x] == y){
-              printable += "<span style=\"color:red\">"+ numbs[x][y]+"</span> ";
+              printable += "<span style=\"color:red\">"+p+""+numbs[x][y]+"</span>  ";
             }
             else{
-              printable +=  numbs[x][y]+" ";
+              printable +=  p+""+numbs[x][y]+"  ";
             }
           }
-      printable += "<br> ";
+      printable += "<br>";
       }
 document.write( printable+"</span></center>");
 }
@@ -112,7 +108,7 @@ for(var i = 0;i < lines.length;i++){
     numbs[i] = [];
     numbers = lines[i].split(' ');
      if(i==0){
-     seednumber = lines[i] ;
+     seednumber = lines[i];
     }
  else{
   for(var x = 0; x < numbers.length; x++){
@@ -120,6 +116,7 @@ for(var i = 0;i < lines.length;i++){
     }
   }
 } 
+FindTheBestRoute();
 }
 
 function readFileHttp(fname) {
