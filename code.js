@@ -1,8 +1,11 @@
 function startf(){
-   readFileHttp("tree.txt")
-  }
+readFileHttp("tree.txt");
+var bestroute = FindTheBestRoute();
+//Näytetään jäljelle jäänyt reitti: 
+PrintRoute(bestroute); 
+}
 
-var numbs   = [[]];
+var numbs = [[]];
 var seednumber;
 
 function FindTheBestRoute(){
@@ -13,10 +16,8 @@ for(var x = 0; x <numbs.length-1; x++){
 routes.push([x]);
 }
 
-
 var kierros = 0;
 var leveys = numbs.length-2;
-
 
 while(kierros<numbs.length-2){
 var rlength = routes.length;
@@ -37,9 +38,8 @@ for(var y = 0; y < rlength; y++){
     
     routes[y].push(routes[y][kierros]);
    }
-   }
-
-
+   } 
+   
 //Eliminointi, Säilytetään kohtaavista reiteistä isompi:
 var deletable = [];//deletoitavien reittien indeksit tähän
 for(var x = 0; x <= leveys; x++){
@@ -66,11 +66,8 @@ leveys--;
 kierros++;
 }
  
-//Näytetään jäljelle jäänyt reitti: 
-PrintRoute(routes[0]); 
+ return routes[0];
 }
-
-
 
 function RouteSum(count){
 //Saa reitin indekseinä palauttaa reitin summan
@@ -123,7 +120,6 @@ for(var i = 0;i < lines.length;i++){
     }
   }
 } 
-FindTheBestRoute();
 }
 
 function readFileHttp(fname) {
