@@ -1,5 +1,13 @@
 function startf(){
-readFileHttp("tree.txt")
+    xmlhttp = getXmlHttp();
+    xmlhttp.onreadystatechange = function() {
+      if (xmlhttp.readyState==4) {
+     numbs = FileTo(xmlhttp.responseText);
+     PrintRoute(FindTheBestRoute()); //Tulostetaan parasreitti
+      } 
+    }
+    xmlhttp.open("GET", "tree.txt", true);
+    xmlhttp.send(null);
 }
 
 var numbs = [[]];
@@ -61,8 +69,7 @@ numberofdeleted++;
 currentwidth--;
 round++;
 }
-//Näytetään jäljelle jäänyt reitti: 
-PrintRoute(routes[0]); 
+return routes[0];
 }
 
 function RouteSum(count){
@@ -99,37 +106,23 @@ document.write( printable+"</span></center>");
 }
 
 
-function formatlines(t){
-//Hakee numerot arrayhin
-var numbers;
-var lines;
-lines = t.split('\n');
-for(var i = 0;i < lines.length;i++){
-    numbs[i] = [];
-    numbers = lines[i].split(' ');
-     if(i==0){
-     seednumber = lines[i];
-    }
- else{
-  for(var x = 0; x < numbers.length; x++){
-     numbs[i-1][x]=parseInt(numbers[x]);
-    }
-  }
-} 
-FindTheBestRoute();
+function FileTo(f){
+        var numbers;
+        var numbst = [[]];
+        var lines = f.split('\n');
+        for(var i = 0;i < lines.length;i++){
+        numbst[i] = [];
+        numbers = lines[i].split(' ');
+        if(i==0)seednumber = lines[i];
+         else{
+        for(var x = 0; x < numbers.length; x++){
+        numbst[i-1][x]=parseInt(numbers[x]);
+        }
+        }
+        }
+        return numbst;
 }
 
-function readFileHttp(fname) {
-//Lukee filen
-    xmlhttp = getXmlHttp();
-    xmlhttp.onreadystatechange = function() {
-      if (xmlhttp.readyState==4) {
-        formatlines(xmlhttp.responseText);
-      }
-    }
-    xmlhttp.open("GET", fname, true);
-    xmlhttp.send(null);
-  }
  function getXmlHttp() {
     if (window.XMLHttpRequest) {
       xmlhttp=new XMLHttpRequest();
